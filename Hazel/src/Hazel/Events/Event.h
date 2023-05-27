@@ -1,9 +1,9 @@
 #pragma once
 
 
-#include"Hazel/Core.h"
+#include"../../Hazel/Core.h"
 
-
+#include<string>
 #include <functional>
 
 namespace Hazel {
@@ -23,7 +23,7 @@ namespace Hazel {
 	};
 
 	enum EventCategory
-	{
+	{ 
 		None = 0,
 		EventCategoryApplication = BIT(0),
 		EventCategoryInput = BIT(1),
@@ -40,6 +40,7 @@ namespace Hazel {
 
 	class HAZEL_API Event
 	{
+		friend class EventDispatcher;
 	public:
 		virtual ~Event() = default;
 
@@ -50,14 +51,19 @@ namespace Hazel {
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		bool IsInCategory(EventCategory category)
+		inline bool IsInCategory(EventCategory category)
 		{
 			return GetCategoryFlags() & category;
 		}
+	protected:
+		bool m_Handled = false;
 	};
 
 	class HAZEL_API EventDispatcher
 	{
+		template<typename T>
+		using EventFn = std::function<bool(T&)>;
+
 	public:
 		EventDispatcher(Event& event)
 			: m_Event(event)
