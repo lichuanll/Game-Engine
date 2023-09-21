@@ -1,18 +1,21 @@
 #include"hzpch.h"
 #include"Application.h"
 
-#include"Hazel/Log.h"
+#include"Hazel/Log.h"	
 #include<GLFW/glfw3.h>
 #include<glad/glad.h>
 namespace Hazel
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
+	Application* Application::s_Instance = nullptr;
 	Application::Application()
 	{
+		HZ_CORE_ASSERT(!s_Instance, "Application already exists");
+		s_Instance = this;
+
 		m_Window = std::unique_ptr<Window> (Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		unsigned int id;
-		glGenVertexArrays(1, &id);
+		
 	}
 	Application::~Application()
 	{
@@ -29,6 +32,8 @@ namespace Hazel
 		m_LayerStack.PushOverlay(layer);
 		layer->OnAttach();
 	}
+
+	
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
@@ -48,13 +53,20 @@ namespace Hazel
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
-			m_Window->OnUpdate();
+			
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+			m_Window->OnUpdate();
 		}
 		WindowResizeEvent e(1280, 720);//创建这个事件的实例
 		HZ_TRACE(e);//通过此宏打印出来，由于重载过右移运算符所以可以这样写
 	}
+
+	void Application::StopRun()
+	{
+		m_Running = false;
+	}
+
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
