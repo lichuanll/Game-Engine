@@ -4,6 +4,7 @@
 #include"Hazel/Log.h"	
 #include<GLFW/glfw3.h>
 #include<glad/glad.h>
+#include "Input.h"
 namespace Hazel
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
@@ -56,6 +57,8 @@ namespace Hazel
 			
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+			auto [x, y] = Input::GetMousePosition();
+			HZ_CORE_TRACE("{0},{1}", x, y);
 			m_Window->OnUpdate();
 		}
 		WindowResizeEvent e(1280, 720);//创建这个事件的实例
