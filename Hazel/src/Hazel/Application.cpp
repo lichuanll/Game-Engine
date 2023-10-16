@@ -16,7 +16,11 @@ namespace Hazel
 
 		m_Window = std::unique_ptr<Window> (Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		m_ImGuiLayer = new ImGuiLayer();
 		
+		PushOverLayer(m_ImGuiLayer);
+
 	}
 	Application::~Application()
 	{
@@ -56,10 +60,15 @@ namespace Hazel
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
-			for (Layer* layer : m_LayerStack)
+			for (Layer* layer : m_LayerStack)//用于提交要要渲染内容的地方
 				layer->OnUpdate();
 			//auto [x, y] = Input::GetMousePosition();
 			//HZ_CORE_TRACE("{0},{1}", x, y);
+			m_ImGuiLayer->Begin();//真正要渲染的地方
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
+
 			m_Window->OnUpdate();
 		}
 		WindowResizeEvent e(1280, 720);//创建这个事件的实例
