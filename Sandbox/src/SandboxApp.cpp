@@ -1,5 +1,6 @@
 #include<Hazel.h>
 #include "Hazel/KeyCodes.h"
+#include "imgui/imgui.h"
 
 class ExampleLayer :public Hazel::Layer 
 {
@@ -22,6 +23,12 @@ public:
 			HZ_TRACE("{0}", (char)e.GetKeyCode());
 		}
 		
+	}
+	virtual  void OnImGuiRender() override
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello!");
+		ImGui::End();
 	}
 };
 class Sandbox :public Hazel::Application
