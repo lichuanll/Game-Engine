@@ -31,6 +31,9 @@ namespace Hazel
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
+
+		unsigned int m_VertexArray , m_VertexBuffer , m_IndexBuffer;
+
 	};
 
 	Application* CreateApplication();

@@ -52,7 +52,7 @@ namespace Hazel
 		HZ_CORE_ASSERT(status, "Failed to initialize Glad!");*/
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
-
+		
 		// Set GLFW Callbacks
 		// glfw规定的回调函数里，不能传入m_Data的指针，所以只能通过glfw的API设置数据的指针
 		// 下面函数会把m_Window传进去，然后又把m_Window作为lambda的参数输入进去
@@ -66,7 +66,6 @@ namespace Hazel
 				WindowResizeEvent event(width, height);
 				data.EventCallback(event);//调用事件函数
 			});//这是一个函数的调用，参数列表是一个glfw窗口，第二个参数是lambda表达式
-
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
