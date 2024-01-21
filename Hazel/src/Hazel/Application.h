@@ -6,6 +6,7 @@
 #include"Hazel/Events/ApplicationEvent.h"
 #include"Hazel/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Renderer/Shader.h"
 
 namespace Hazel
 {
@@ -33,6 +34,7 @@ namespace Hazel
 		bool m_Running = true;
 
 		unsigned int m_VertexArray , m_VertexBuffer , m_IndexBuffer;
+		std::unique_ptr<Shader> m_Shader;
 
 	};
 
