@@ -8,7 +8,7 @@ namespace Hazel
 	class Renderer
 	{
 	public:
-		inline static RenderAPI  GetAPI() { return s_RendererAPI; }
+		inline static RenderAPI  GetAPI() { return s_RendererAPI;}
 	private:
 		static RenderAPI s_RendererAPI;
 	};

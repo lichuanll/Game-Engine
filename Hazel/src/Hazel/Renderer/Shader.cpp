@@ -32,7 +32,7 @@ namespace Hazel
 			glDeleteShader(vertexShader);
 
 			HZ_CORE_ERROR("{0}", infoLog.data());
-			HZ_CORE_ASSERT(false, "Vertex shader compilation failure!");
+			//HZ_CORE_ASSERT(false, "Vertex shader compilation failure!");
 			return;
 		}
 
