@@ -27,21 +27,21 @@ namespace Hazel
 
 	struct BufferElement
 	{
-		std::string Name;
-		ShaderDataType Type;
-		uint32_t Offset;
-		uint32_t Size;
-		bool Normalized;
+		std::string Name;//名字字符串
+		ShaderDataType Type;//数据的类型
+		uint32_t Offset;//起始位置在第几个字节
+		uint32_t Size;//这个数据类型的字节数
+		bool Normalized;//是否归一化
 		BufferElement()
 		{
 			
 		}
-		BufferElement(ShaderDataType type,const std::string& name, bool normalized = false)
+		BufferElement(ShaderDataType type,const std::string& name, bool normalized = false)//构造函数这一步就已经有了数据类型的Size
 			:Name(name),Type(type),Size(ShaderDataTypeSize(type)),Offset(0),Normalized(normalized)
 		{
 			
 		}
-		uint32_t GetComponentCount()const
+		uint32_t GetComponentCount()const//计算每一组有多少个数据
 		{
 			switch (Type)
 			{
@@ -87,14 +87,14 @@ namespace Hazel
 			m_Stride = 0;
 			for(auto& element : m_Elements)
 			{
-				element.Offset = offset;//计算每一个layout的偏移量
+				element.Offset = offset;//计算每一个layout的起始位置
 				offset += element.Size;
-				m_Stride += element.Size;
+				m_Stride += element.Size;//计算内存偏移量
 			}
 		}
 	private:
-		std::vector<BufferElement> m_Elements;
-		uint32_t m_Stride = 0;
+		std::vector<BufferElement> m_Elements;//所有Layout
+		uint32_t m_Stride = 0;//因为内存偏移量是所有Layout共用的，所以不需要在每一个Layout类(BufferElement类)里定义
 	};
 	class VertexBuffer
 	{
