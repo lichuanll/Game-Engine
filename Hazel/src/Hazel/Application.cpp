@@ -3,7 +3,9 @@
 
 #include"Hazel/Log.h"	
 #include<GLFW/glfw3.h>
-#include<glad/glad.h>
+
+#include "Renderer/Renderer.h"
+#include "Renderer/RenderCommand.h"
 #include "Input.h"
 namespace Hazel
 {
@@ -57,6 +59,7 @@ namespace Hazel
 		};
 		std::shared_ptr<VertexBuffer> squareVB;
 		squareVB.reset(VertexBuffer::Create(SquareVertices, sizeof(SquareVertices)));
+
 		squareVB->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" }
 			}
@@ -161,18 +164,19 @@ namespace Hazel
 		
 		while (m_Running)
 		{
-			glClearColor(1, 0, 1, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			
+			RenderCommand::SetClearColor({ 1,0,1,1 });
+			RenderCommand::Clear();
+			Renderer::BeginScene();
 
 			m_Shader2->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-			
+			Renderer::Submit(m_SquareVA);
 
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
-			m_Shader->UnBind();
+			Renderer::Submit(m_VertexArray);
+			
+			
+			Renderer::EndScene();
 			for (Layer* layer : m_LayerStack)//用于提交要要渲染内容的地方
 				layer->OnUpdate();
 			//auto [x, y] = Input::GetMousePosition();
