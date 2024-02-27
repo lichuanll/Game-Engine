@@ -7,6 +7,7 @@
 #include"Hazel/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 #include "Renderer/Buffer.h"
+#include "Renderer/OrthographicCamera.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
 
@@ -43,6 +44,8 @@ namespace Hazel
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 
 		std::shared_ptr<VertexArray> m_SquareVA;
+
+		OrthographicCamera m_Camera;
 	};
 
 	Application* CreateApplication();

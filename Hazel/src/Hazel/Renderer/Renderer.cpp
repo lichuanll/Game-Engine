@@ -3,16 +3,21 @@
 
 namespace Hazel
 {
-	void Renderer::BeginScene()
+	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
+	void Renderer::BeginScene(OrthographicCamera& camera)
 	{
+		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}
 
 	void Renderer::EndScene()
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray,const std::shared_ptr<Shader>& shader)
 	{
+		shader->Bind();
+		shader->UploadUniformMat4(m_SceneData->ViewProjectionMatrix, "u_ViewProjection");
+
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
 	}
