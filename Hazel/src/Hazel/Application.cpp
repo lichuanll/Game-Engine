@@ -5,9 +5,10 @@
 #include<GLFW/glfw3.h>
 
 #include "Renderer/Renderer.h"
-#include "Renderer/RenderCommand.h"
+
 
 #include "Input.h"
+#include <GLFW/glfw3.h>
 namespace Hazel
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
@@ -21,7 +22,7 @@ namespace Hazel
 
 		m_Window = std::unique_ptr<Window> (Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-
+		
 		m_ImGuiLayer = new ImGuiLayer();
 		
 		PushOverLayer(m_ImGuiLayer);
@@ -62,9 +63,12 @@ namespace Hazel
 		while (m_Running)
 		{
 			
-			
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			for (Layer* layer : m_LayerStack)//用于提交要要渲染内容的地方
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 			//auto [x, y] = Input::GetMousePosition();
 			//HZ_CORE_TRACE("{0},{1}", x, y);
 			m_ImGuiLayer->Begin();//真正要渲染的地方

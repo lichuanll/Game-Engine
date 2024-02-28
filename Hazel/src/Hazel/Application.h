@@ -5,11 +5,12 @@
 #include"Events/Event.h"
 #include"Hazel/Events/ApplicationEvent.h"
 #include"Hazel/LayerStack.h"
+
+#include "Hazel/Core/Timestep.h"
+
 #include "ImGui/ImGuiLayer.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/OrthographicCamera.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexArray.h"
+
+
 
 namespace Hazel
 {
@@ -35,7 +36,8 @@ namespace Hazel
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
-
+		Timestep m_Timestep;
+		float m_LastFrameTime;
 		//unsigned int m_VertexArray;
 		
 	};
