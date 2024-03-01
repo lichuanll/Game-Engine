@@ -38,17 +38,18 @@ public:
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
 		m_SquareVA.reset(Hazel::VertexArray::Create());
-		float SquareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+		float SquareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 		Hazel::Ref<Hazel::VertexBuffer> squareVB;
 		squareVB.reset(Hazel::VertexBuffer::Create(SquareVertices, sizeof(SquareVertices)));
 
 		squareVB->SetLayout({
-			{Hazel::ShaderDataType::Float3, "a_Position" }
+			{Hazel::ShaderDataType::Float3, "a_Position" },
+			{Hazel::ShaderDataType::Float2, "a_TexCoord" }
 			}
 		);
 		m_SquareVA->AddVertexBuffer(squareVB);
@@ -89,6 +90,8 @@ public:
 			}
 		)";
 		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
+
+
 		std::string vertexSrc2 = R"(
 			#version 330 core
 			
@@ -121,6 +124,45 @@ public:
 			}
 		)";
 		m_Shader2.reset(Hazel::Shader::Create(vertexSrc2, fragmentSrc2));
+		std::string TextureVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+			
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+			out vec3 v_Position;
+			out vec2 v_TexCoord;
+			
+			void main()
+			{
+				v_Position = a_Position;
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+			}
+		)";
+
+		std::string TextureFragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+			in vec3 v_Position;
+			in vec2 v_TexCoord;
+			uniform vec4 u_Color;
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture,v_TexCoord);
+				
+			}
+		)";
+		m_TexureShader.reset(Hazel::Shader::Create(TextureVertexSrc, TextureFragmentSrc));
+		m_Texture = Hazel::Texture2D::Create("assets/textures/HT.png");
+
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->UploadUniformInt(0, "u_Texture");
 	}
 	void OnUpdate(Hazel::Timestep ts)override//加入Time的作用是在循环中相同时间循环不同次数（由于显示器分辨率导致）时，可以获得相同的移动效果
 	{
@@ -195,11 +237,11 @@ public:
 				Hazel::Renderer::Submit(m_SquareVA, m_Shader2, transform);
 			}
 		}
-		
-		
+		m_Texture->Bind();
+		Hazel::Renderer::Submit(m_SquareVA, m_TexureShader,glm::scale(glm::mat4(1.0f),glm::vec3(1.5f)));
 
-
-		Hazel::Renderer::Submit(m_VertexArray, m_Shader);
+		//Triangle:
+		//Hazel::Renderer::Submit(m_VertexArray, m_Shader);
 
 
 		Hazel::Renderer::EndScene();
@@ -214,7 +256,7 @@ public:
 	{
 		ImGui::Begin("Setting");
 		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
-			ImGui::End();
+		ImGui::End();
 	}
 	bool OnKeyPressedEvent(Hazel::KeyPressedEvent& event)
 	{
@@ -224,8 +266,10 @@ public:
 private:
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::Shader> m_Shader2;
+	Hazel::Ref<Hazel::Shader> m_TexureShader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
 	Hazel::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
