@@ -159,8 +159,8 @@ public:
 			}
 		)";
 		m_TexureShader.reset(Hazel::Shader::Create(TextureVertexSrc, TextureFragmentSrc));
-		m_Texture = Hazel::Texture2D::Create("assets/textures/HT.png");
-
+		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");//Checkerboard
+		m_LogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->Bind();
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->UploadUniformInt(0, "u_Texture");
 	}
@@ -239,6 +239,8 @@ public:
 		}
 		m_Texture->Bind();
 		Hazel::Renderer::Submit(m_SquareVA, m_TexureShader,glm::scale(glm::mat4(1.0f),glm::vec3(1.5f)));
+		m_LogoTexture->Bind();
+		Hazel::Renderer::Submit(m_SquareVA, m_TexureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		//Triangle:
 		//Hazel::Renderer::Submit(m_VertexArray, m_Shader);
@@ -269,7 +271,7 @@ private:
 	Hazel::Ref<Hazel::Shader> m_TexureShader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
-	Hazel::Ref<Hazel::Texture2D> m_Texture;
+	Hazel::Ref<Hazel::Texture2D> m_Texture, m_LogoTexture;
 
 	Hazel::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;

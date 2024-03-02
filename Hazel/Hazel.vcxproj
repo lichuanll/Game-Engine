@@ -168,6 +168,7 @@
     <ClInclude Include="src\Hazel\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Hazel\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Hazel\Renderer\Buffer.h" />
+    <ClInclude Include="src\Hazel\Renderer\Camera.h" />
     <ClInclude Include="src\Hazel\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Hazel\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Hazel\Renderer\RenderCommand.h" />
@@ -612,6 +613,7 @@
     <ClCompile Include="src\Hazel\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Hazel\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Hazel\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Hazel\Renderer\Camera.cpp" />
     <ClCompile Include="src\Hazel\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Hazel\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Hazel\Renderer\Renderer.cpp" />
