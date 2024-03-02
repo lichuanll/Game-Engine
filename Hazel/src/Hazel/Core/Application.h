@@ -2,13 +2,13 @@
 #include"Core.h"
 
 #include"Window.h"
-#include"Events/Event.h"
+#include"Hazel/Events/Event.h"
 #include"Hazel/Events/ApplicationEvent.h"
-#include"Hazel/LayerStack.h"
+#include"Hazel/Core/LayerStack.h"
 
 #include "Hazel/Core/Timestep.h"
 
-#include "ImGui/ImGuiLayer.h"
+#include "Hazel/ImGui/ImGuiLayer.h"
 
 
 

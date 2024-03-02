@@ -5,6 +5,8 @@
 
 #include <glad/glad.h>
 
+
+
 namespace Hazel
 {
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
