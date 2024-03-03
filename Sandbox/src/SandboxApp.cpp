@@ -124,7 +124,7 @@ public:
 			}
 		)";
 		m_Shader2.reset(Hazel::Shader::Create(vertexSrc2, fragmentSrc2));
-		std::string TextureVertexSrc = R"(
+		/*std::string TextureVertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -157,8 +157,8 @@ public:
 				color = texture(u_Texture,v_TexCoord);
 				
 			}
-		)";
-		m_TexureShader.reset(Hazel::Shader::Create(TextureVertexSrc, TextureFragmentSrc));
+		)";*/
+		m_TexureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
 		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");//Checkerboard
 		m_LogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->Bind();
