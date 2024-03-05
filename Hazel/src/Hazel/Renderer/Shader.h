@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <unordered_map>
 namespace Hazel
 {
 	class Shader
@@ -8,9 +9,23 @@ namespace Hazel
 		virtual ~Shader() = default;
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
-		static Shader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
-		static Shader* Create(const std::string& filepath);
+		virtual const std::string& GetName() const = 0;
+		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		static Ref<Shader> Create(const std::string& filepath);
 
+	};
+	class ShaderLibrary//靠读取文件名字去找到对应的shader,读取文件时记录文件的名字，在需要用的时候直接输入名字查找
+	{
+	public:
+		void Add(const Ref<Shader>& shader);
+		void Add(const std::string& name, const Ref<Shader>& shader);
+		Ref<Shader> Load(const std::string& filepath);
+		Ref<Shader> Load(const std::string& name, const std::string& filepath);
+		Ref<Shader> Get(const std::string& name);
+
+		bool Exists(const std::string& name)const;
+	private:
+		std::unordered_map<std::string, Ref<Shader>> m_Shaders;
 	};
 }
 

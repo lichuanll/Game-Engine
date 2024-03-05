@@ -8,6 +8,7 @@
 
 #include <string>
 #include <sstream>
+#include <array>
 #include <fstream>
 #include <vector>
 #include <list>

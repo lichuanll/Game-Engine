@@ -12,8 +12,6 @@ public:
 	{
 		m_VertexArray.reset(Hazel::VertexArray::Create());
 
-
-
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
 			 0.5f, -0.5f, 0.0f, 0.0f,1.0f,0.0f,1.0f,
@@ -89,7 +87,7 @@ public:
 				color = v_Color;
 			}
 		)";
-		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
+		m_Shader = Hazel::Shader::Create("VertexPosColor",vertexSrc, fragmentSrc);
 
 
 		std::string vertexSrc2 = R"(
@@ -123,7 +121,7 @@ public:
 				
 			}
 		)";
-		m_Shader2.reset(Hazel::Shader::Create(vertexSrc2, fragmentSrc2));
+		m_Shader2 = Hazel::Shader::Create("FlatColor",vertexSrc2, fragmentSrc2);
 		/*std::string TextureVertexSrc = R"(
 			#version 330 core
 			
@@ -158,11 +156,12 @@ public:
 				
 			}
 		)";*/
-		m_TexureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
+		//m_TexureShader = Hazel::Shader::Create("assets/shaders/Texture.glsl");
 		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");//Checkerboard
 		m_LogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TexureShader)->UploadUniformInt(0, "u_Texture");
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->UploadUniformInt(0, "u_Texture");
 	}
 	void OnUpdate(Hazel::Timestep ts)override//加入Time的作用是在循环中相同时间循环不同次数（由于显示器分辨率导致）时，可以获得相同的移动效果
 	{
@@ -237,10 +236,11 @@ public:
 				Hazel::Renderer::Submit(m_SquareVA, m_Shader2, transform);
 			}
 		}
+		auto textureShader = m_ShaderLibrary.Get("Texture");
 		m_Texture->Bind();
-		Hazel::Renderer::Submit(m_SquareVA, m_TexureShader,glm::scale(glm::mat4(1.0f),glm::vec3(1.5f)));
+		Hazel::Renderer::Submit(m_SquareVA, textureShader,glm::scale(glm::mat4(1.0f),glm::vec3(1.5f)));
 		m_LogoTexture->Bind();
-		Hazel::Renderer::Submit(m_SquareVA, m_TexureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hazel::Renderer::Submit(m_SquareVA, textureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		//Triangle:
 		//Hazel::Renderer::Submit(m_VertexArray, m_Shader);
@@ -266,9 +266,9 @@ public:
 		return false;
 	}
 private:
+	Hazel::ShaderLibrary m_ShaderLibrary;
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::Shader> m_Shader2;
-	Hazel::Ref<Hazel::Shader> m_TexureShader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 	Hazel::Ref<Hazel::Texture2D> m_Texture, m_LogoTexture;
