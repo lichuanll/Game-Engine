@@ -2,13 +2,14 @@
 #include "Hazel/Platform/OpenGL/OpenGLShader.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "Hazel/Core/OrthographicCameraController.h"
 #include "imgui/imgui.h"
 
 class ExampleLayer :public Hazel::Layer 
 {
 public:
 	ExampleLayer() :Layer("Example"),
-		 m_Camera(-1.6f, 1.6f, -0.9f, 0.9f),m_CameraPosition(0.0f),m_SquarePosition(0.0f)
+		 m_CameraController(1280.0f/720.0f,true)
 	{
 		m_VertexArray.reset(Hazel::VertexArray::Create());
 
@@ -166,34 +167,7 @@ public:
 	void OnUpdate(Hazel::Timestep ts)override//加入Time的作用是在循环中相同时间循环不同次数（由于显示器分辨率导致）时，可以获得相同的移动效果
 	{
 		//HZ_TRACE("Delta time:{0}s ({1}ms)", ts.GetSeconds(),ts.GetMillisecond());
-		
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT))
-		{
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT))
-		{
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-		}
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN))
-		{
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_UP))
-		{
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-		}
-
-		if(Hazel::Input::IsKeyPressed(HZ_KEY_A))
-		{
-			m_CameraRotation -= m_CameraRotationSpeed * ts;
-		}
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_D))
-		{
-			m_CameraRotation += m_CameraRotationSpeed * ts;
-		}
-
-
+		m_CameraController.OnUpdate(ts);
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_J))
 		{
 			m_SquarePosition.x -= m_SquareMoveSpeed * ts;
@@ -213,14 +187,13 @@ public:
 
 		Hazel::RenderCommand::SetClearColor({ 0,0,0,1 });
 		Hazel::RenderCommand::Clear();
-		Hazel::Renderer::BeginScene(m_Camera);
+		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		glm::mat4 Move = glm::translate(glm::mat4(1.0f), m_SquarePosition);
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
 
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
+		
 
 		//glm::vec4 redColor(0.8f, 0.2f, 0.3f, 1.0f);
 		//glm::vec4 BlueColor(0.2f, 0.3f, 0.8f, 1.0f);
@@ -243,7 +216,7 @@ public:
 		Hazel::Renderer::Submit(m_SquareVA, textureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		//Triangle:
-		//Hazel::Renderer::Submit(m_VertexArray, m_Shader);
+		Hazel::Renderer::Submit(m_VertexArray, m_Shader,glm::mat4(1.0f));
 
 
 		Hazel::Renderer::EndScene();
@@ -252,6 +225,7 @@ public:
 	{
 		Hazel::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<Hazel::KeyPressedEvent>(HZ_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent));
+		m_CameraController.OnEvent(event);
 		
 	}
 	virtual  void OnImGuiRender() override
@@ -273,12 +247,9 @@ private:
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 	Hazel::Ref<Hazel::Texture2D> m_Texture, m_LogoTexture;
 
-	Hazel::OrthographicCamera m_Camera;
-	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 5.0f;
-	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 180.0f;
-	glm::vec3 m_SquarePosition;
+	Hazel::OrthographicCameraController m_CameraController;
+
+	glm::vec3 m_SquarePosition = {1.0f,1.0f,0.0f};
 	float m_SquareMoveSpeed = 1.0f;
 
 	glm::vec4 m_SquareColor= glm::vec4(0.2f, 0.3f, 0.8f, 1.0f);

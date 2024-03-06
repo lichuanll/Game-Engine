@@ -49,7 +49,8 @@ namespace Hazel
 		
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-		HZ_CORE_TRACE("{0}", e);
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
+		//HZ_CORE_TRACE("{0}", e);
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
 			(*--it)->OnEvent(e);
@@ -66,16 +67,18 @@ namespace Hazel
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
-
-			for (Layer* layer : m_LayerStack)//用于提交要要渲染内容的地方
-				layer->OnUpdate(timestep);
-			//auto [x, y] = Input::GetMousePosition();
-			//HZ_CORE_TRACE("{0},{1}", x, y);
+			if(!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)//用于提交要要渲染内容的地方
+					layer->OnUpdate(timestep);
+				//auto [x, y] = Input::GetMousePosition();
+				//HZ_CORE_TRACE("{0},{1}", x, y);
+				
+			}
 			m_ImGuiLayer->Begin();//真正要渲染的地方
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 			m_ImGuiLayer->End();
-
 			m_Window->OnUpdate();
 		}
 		WindowResizeEvent e(1280, 720);//创建这个事件的实例
@@ -91,5 +94,17 @@ namespace Hazel
 	{
 		m_Running = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if(e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+		m_Minimized = false;
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		return false;
 	}
 }
