@@ -1,4 +1,4 @@
-#include<Hazel.h>
+#include <Hazel.h>
 #include "Hazel/Platform/OpenGL/OpenGLShader.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -187,6 +187,7 @@ public:
 
 		Hazel::RenderCommand::SetClearColor({ 0,0,0,1 });
 		Hazel::RenderCommand::Clear();
+		//m_CameraController.ChangeCameraType(Hazel::Camera::CameraType::Orthographic);
 		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		glm::mat4 Move = glm::translate(glm::mat4(1.0f), m_SquarePosition);

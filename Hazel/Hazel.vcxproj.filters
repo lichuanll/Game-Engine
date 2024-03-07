@@ -1414,6 +1414,7 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\Hazel\Core\OrthographicCameraController.h" />
+    <ClInclude Include="src\Hazel\Renderer\PerspectiveCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Core\Application.cpp">
@@ -1492,5 +1493,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\Hazel\Core\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Hazel\Renderer\PerspectiveCamera.cpp" />
   </ItemGroup>
 </Project>

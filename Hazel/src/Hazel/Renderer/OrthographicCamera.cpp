@@ -5,16 +5,22 @@
 
 namespace Hazel
 {
+
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
 		:m_ProjectionMatrix(glm::ortho(left,right,bottom,top,-1.0f,1.0f)),m_ViewMatrix(1.0f)
 	{
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 
-	void OrthographicCamera::SetProjection(float left, float right, float bottom, float top)
+	void OrthographicCamera::SetProjection(glm::mat4 ProjectionMatrix) 
 	{
-		m_ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+		m_ProjectionMatrix = ProjectionMatrix;
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	}
+
+	void OrthographicCamera::SetPerspectiveRotation(glm::vec3 pos, glm::vec3 front, glm::vec3 up)
+	{
+		HZ_CORE_ERROR("This is PerspectiveCamera funtion! Please use SetProjection");
 	}
 
 	void OrthographicCamera::RecalculateViewMatrix()
