@@ -6,10 +6,10 @@
 #include "Hazel/Events/MouseEvent.h"
 namespace Hazel
 {
-	class OrthographicCameraController
+	class CameraController
 	{
 	public:
-		OrthographicCameraController(float aspectRatio, bool rotation = false);
+		CameraController(float aspectRatio, bool rotation = false);
 		Ref<Camera> GetCamera() { return m_Camera; }
 		const Ref<Camera> GetCamera()const { return m_Camera; }
 

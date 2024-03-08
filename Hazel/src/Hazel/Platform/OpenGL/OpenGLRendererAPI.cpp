@@ -1,6 +1,9 @@
 #include "hzpch.h"
 #include "OpenGLRendererAPI.h"
 #include <glad/glad.h>
+
+#include "GLFW/glfw3.h"
+
 namespace Hazel
 {
 	void OpenGLRendererAPI::Init()
@@ -22,6 +25,12 @@ namespace Hazel
 	void OpenGLRendererAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void OpenGLRendererAPI::SetMouseMode(void* window,bool Enable)
+	{
+
+		glfwSetInputMode(static_cast<GLFWwindow*>(window), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)

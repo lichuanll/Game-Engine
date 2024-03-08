@@ -1,8 +1,11 @@
 #include <Hazel.h>
+#include <Hazel/Core/EntryPoint.h>
+
+#include "SandBox2D.h"
 #include "Hazel/Platform/OpenGL/OpenGLShader.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "Hazel/Core/OrthographicCameraController.h"
+#include "Hazel/Core/CameraController.h"
 #include "imgui/imgui.h"
 
 class ExampleLayer :public Hazel::Layer 
@@ -11,7 +14,7 @@ public:
 	ExampleLayer() :Layer("Example"),
 		 m_CameraController(1280.0f/720.0f,true)
 	{
-		m_VertexArray.reset(Hazel::VertexArray::Create());
+		m_VertexArray = Hazel::VertexArray::Create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
@@ -36,7 +39,7 @@ public:
 		m_IndexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-		m_SquareVA.reset(Hazel::VertexArray::Create());
+		m_SquareVA = Hazel::VertexArray::Create();
 		float SquareVertices[5 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
 			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
@@ -187,6 +190,7 @@ public:
 
 		Hazel::RenderCommand::SetClearColor({ 0,0,0,1 });
 		Hazel::RenderCommand::Clear();
+		//Hazel::RenderCommand::SetMouseMode(Hazel::Application::Get().GetWindow().GetNativeWindow(), true);
 		//m_CameraController.ChangeCameraType(Hazel::Camera::CameraType::Orthographic);
 		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
@@ -248,7 +252,7 @@ private:
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 	Hazel::Ref<Hazel::Texture2D> m_Texture, m_LogoTexture;
 
-	Hazel::OrthographicCameraController m_CameraController;
+	Hazel::CameraController m_CameraController;
 
 	glm::vec3 m_SquarePosition = {1.0f,1.0f,0.0f};
 	float m_SquareMoveSpeed = 1.0f;
@@ -261,7 +265,8 @@ class Sandbox :public Hazel::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 	}
 	~Sandbox()
 	{

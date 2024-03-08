@@ -27,6 +27,10 @@ namespace Hazel
 		{
 			s_RendererAPI->DrawIndexed(vertexArray);
 		}
+		inline static void SetMouseMode(void* window, bool Enable)
+		{
+			s_RendererAPI->SetMouseMode(window, Enable);
+		}
 	private:
 		static  RendererAPI* s_RendererAPI;
 	};

@@ -1,5 +1,5 @@
 #include "hzpch.h"
-#include "OrthographicCameraController.h"
+#include "CameraController.h"
 
 #include "KeyCodes.h"
 #include "Hazel/Core/Input.h"
@@ -10,7 +10,7 @@
 
 namespace Hazel
 {
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio,bool rotation)
+	CameraController::CameraController(float aspectRatio,bool rotation)
 		: m_AspectRatio(aspectRatio),m_Rotation(rotation)
 	{
 		switch (m_Camera->GetCameraType())
@@ -26,7 +26,7 @@ namespace Hazel
 		}
 	}
 
-	void OrthographicCameraController::OnUpdate(Timestep ts)
+	void CameraController::OnUpdate(Timestep ts)
 	{
 		if(cameraType == Camera::CameraType::Orthographic)
 		{
@@ -38,7 +38,7 @@ namespace Hazel
 		}
 	}
 
-	void OrthographicCameraController::OnEvent(Event& e)
+	void CameraController::OnEvent(Event& e)
 	{
 		if (cameraType == Camera::CameraType::Orthographic)
 		{
@@ -50,7 +50,7 @@ namespace Hazel
 		}
 	}
 
-	void OrthographicCameraController::ChangeCameraType(Camera::CameraType type)
+	void CameraController::ChangeCameraType(Camera::CameraType type)
 	{
 		Camera::SetCameraType(type);
 		cameraType = type;
@@ -64,7 +64,7 @@ namespace Hazel
 		}
 	}
 
-	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
+	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		m_ZoomLevel -= e.GetYOffset() * 0.25f ;//缩放级别
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
@@ -74,7 +74,7 @@ namespace Hazel
 		return false;
 	}
 
-	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
+	bool CameraController::OnWindowResized(WindowResizeEvent& e)
 	{
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		glm::mat4 ProjectionMatrix = glm::ortho(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, -1.0f, 1.0f);
@@ -82,50 +82,13 @@ namespace Hazel
 		return false;
 	}
 
-	bool OrthographicCameraController::OnMouseMove(MouseMovedEvent& e)
+	bool CameraController::OnMouseMove(MouseMovedEvent& e)
 	{
-		float _xpos = e.GetX();
-		float _ypos = e.GetY();
-		if (m_firstMove)
-		{
-			m_xpos = _xpos;
-			m_ypos = _ypos;
-			m_firstMove = false;
-			return false;
-		}
-		float _xOffset = _xpos - m_xpos;
-		float _yOffset = -(_ypos - m_ypos);
-
-		m_xpos = _xpos;//更新上一次的数值
-		m_ypos = _ypos;//更新上一次的数值
-
-		m_pitch += _yOffset * m_sensitivity;
-		if (m_pitch >= 89.0f)
-		{
-			m_pitch = 89.0f;
-		}
-		if (m_pitch <= -89.0f)
-		{
-			m_pitch = -89.0f;
-		}
-
-		m_front.y = sin(glm::radians(m_pitch));
-		m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-
-		m_front = normalize(m_front);
-
-		m_yaw += _xOffset * m_sensitivity;
-
-		m_front.y = sin(glm::radians(m_pitch));
-		m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-
-		m_front = normalize(m_front);
+		
 		return false;
 	}
 
-	void OrthographicCameraController::OrthographicCameraOnUpdate(Timestep ts)
+	void CameraController::OrthographicCameraOnUpdate(Timestep ts)
 	{
 		if (Input::IsKeyPressed(HZ_KEY_A))
 		{
@@ -160,18 +123,56 @@ namespace Hazel
 		m_CameraMoveSpeed = m_ZoomLevel;
 	}
 
-	void OrthographicCameraController::OrthographicCameraOnEvent(Event& e)
+	void CameraController::OrthographicCameraOnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-		dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+		dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(CameraController::OnMouseScrolled));
+		dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(CameraController::OnWindowResized));
 	}
 
-	void OrthographicCameraController::PerspectiveCameraOnUpdate(Timestep ts)
+	void CameraController::PerspectiveCameraOnUpdate(Timestep ts)
 	{
-		if(1)//右键按住，中键为2，左键为0//Input::IsMouseButtonPressed(1)
+		
+		if(Input::IsMouseButtonPressed(1))//右键按住，中键为2，左键为0//Input::IsMouseButtonPressed(1)
 		{
-			
+			float _xpos = Input::GetMouseX();
+			float _ypos = Input::GetMouseY();
+			if (m_firstMove)
+			{
+				m_xpos = _xpos;
+				m_ypos = _ypos;
+				m_firstMove = false;
+				return;
+			}
+			float _xOffset = _xpos - m_xpos;
+			float _yOffset = -(_ypos - m_ypos);
+
+			m_xpos = _xpos;//更新上一次的数值
+			m_ypos = _ypos;//更新上一次的数值
+
+			m_pitch += _yOffset * m_sensitivity;
+			if (m_pitch >= 89.0f)
+			{
+				m_pitch = 89.0f;
+			}
+			if (m_pitch <= -89.0f)
+			{
+				m_pitch = -89.0f;
+			}
+
+			m_front.y = sin(glm::radians(m_pitch));
+			m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+			m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+
+			m_front = normalize(m_front);
+
+			m_yaw += _xOffset * m_sensitivity;
+
+			m_front.y = sin(glm::radians(m_pitch));
+			m_front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+			m_front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+
+			m_front = normalize(m_front);
 			if (Input::IsKeyPressed(HZ_KEY_W))
 			{
 				m_CameraPosition += m_front * m_CameraMoveSpeed * ts.GetSeconds();
@@ -188,14 +189,16 @@ namespace Hazel
 			{
 				m_CameraPosition += normalize(cross(m_front, m_up)) * m_CameraMoveSpeed * ts.GetSeconds();
 			}
+			//m_firstMove = true;
+			m_Camera->SetPerspectiveRotation(m_CameraPosition, m_front, m_up);
 		}
-		m_Camera->SetPerspectiveRotation(m_CameraPosition, m_front, m_up);
+		
 		
 	}
 
-	void OrthographicCameraController::PerspectiveCameraOnEvent(Event& e)
+	void CameraController::PerspectiveCameraOnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseMovedEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::OnMouseMove));
+		dispatcher.Dispatch<MouseMovedEvent>(HZ_BIND_EVENT_FN(CameraController::OnMouseMove));
 	}
 }
