@@ -165,7 +165,7 @@ public:
 		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");//Checkerboard
 		m_LogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->UploadUniformInt(0, "u_Texture");
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	}
 	void OnUpdate(Hazel::Timestep ts)override//加入Time的作用是在循环中相同时间循环不同次数（由于显示器分辨率导致）时，可以获得相同的移动效果
 	{
@@ -204,7 +204,7 @@ public:
 		//glm::vec4 BlueColor(0.2f, 0.3f, 0.8f, 1.0f);
 
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_Shader2)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_Shader2)->UploadUniformFloat4(m_SquareColor,"u_Color");
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_Shader2)->UploadUniformFloat4("u_Color", m_SquareColor);
 		for(int y = 0; y < 20; y++)
 		{
 			for(int x = 0; x < 20; x++)

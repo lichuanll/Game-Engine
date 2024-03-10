@@ -16,15 +16,18 @@ namespace Hazel
 		virtual void Bind() const;
 		virtual void UnBind() const;
 		virtual  const std::string& GetName() const override { return m_Name; }
-		void UploadUniformInt(const int value, const std::string& name);
+		virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
+		virtual void SetFloat3(const std::string& name, const glm::vec3& value) override;
+		virtual void SetFloat4(const std::string& name, const glm::vec4& value) override;
+		void UploadUniformInt(const std::string& name, const int value);
 
 		void UploadUniformFloat(const float value, const std::string& name);
-		void UploadUniformFloat2(const glm::vec2& value, const std::string& name);
-		void UploadUniformFloat3(const glm::vec3& value, const std::string& name);
-		void UploadUniformFloat4(const glm::vec4& value, const std::string& name);
+		void UploadUniformFloat2(const std::string& name, const glm::vec2& value);
+		void UploadUniformFloat3(const std::string& name, const glm::vec3& value);
+		void UploadUniformFloat4(const std::string& name, const glm::vec4& value);
 
-		void UploadUniformMat3(const glm::mat3& matrix, const std::string& name);
-		void UploadUniformMat4(const glm::mat4& matrix, const std::string& name);
+		void UploadUniformMat3( const std::string& name, const glm::mat3& matrix);
+		void UploadUniformMat4( const std::string& name, const glm::mat4& matrix);
 
 	private:
 		std::string ReadFile(const std::string& filepath);
