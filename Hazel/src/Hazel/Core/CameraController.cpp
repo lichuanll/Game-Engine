@@ -190,9 +190,9 @@ namespace Hazel
 				m_CameraPosition += normalize(cross(m_front, m_up)) * m_CameraMoveSpeed * ts.GetSeconds();
 			}
 			//m_firstMove = true;
-			m_Camera->SetPerspectiveRotation(m_CameraPosition, m_front, m_up);
+			
 		}
-		
+		m_Camera->SetPerspectiveRotation(m_CameraPosition, m_front, m_up);
 		
 	}
 
